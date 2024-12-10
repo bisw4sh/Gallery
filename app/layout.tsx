@@ -37,7 +37,7 @@ export default function RootLayout({
               Gallery
             </Link>
             <div className="flex justify-center items-center gap-1">
-              <Link href="/add">
+              <Link href="/upload">
                 <IoIosAddCircle className="text-[40px] hover:fill-slate-500" />
               </Link>
               <Link href="/signin">

@@ -123,7 +123,7 @@ export default function SignInPage() {
             className="px-0 font-normal"
             onClick={() => console.log("Forgot password clicked")}
           >
-            Forgot your password?
+            <Link href="/password/reset">Forgot your password?</Link>
           </Button>
         </CardFooter>
         <CardFooter className="flex justify-center">

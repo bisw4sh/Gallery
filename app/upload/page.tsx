@@ -18,7 +18,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
-export default function Add() {
+export default function UploadPage() {
   const [img, setImg] = useState<string | null>(null);
 
   const {
