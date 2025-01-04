@@ -1,7 +1,4 @@
 "use client";
-
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,22 +11,36 @@ import {
 } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { changePasswordAction } from "@/app/actions";
+
+export const changePasswordSchema = z
+  .object({
+    password: z.string().min(6, "Password must be at least 6 characters long"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords must match",
+    path: ["confirmPassword"],
+  });
+
+type TChangePassword = z.infer<typeof changePasswordSchema>;
 
 export default function ResetPasswordPage() {
-  const [password, setpassword] = useState("");
-  const [error, setError] = useState("");
-  const router = useRouter();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<TChangePassword>({
+    resolver: zodResolver(changePasswordSchema),
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-
-    if (!password) {
-      setError("Please fill in all fields");
-      return;
-    }
-
-    router.push("/dashboard");
+  const onSubmit: SubmitHandler<TChangePassword> = async (
+    data: TChangePassword
+  ) => {
+    changePasswordAction(data.password);
   };
 
   return (
@@ -40,37 +51,44 @@ export default function ResetPasswordPage() {
           <CardDescription>Create a new password</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="newPassword">Password</Label>
                 <Input
-                  id="password"
+                  id="newPassword"
                   type="password"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setpassword(e.target.value)}
+                  placeholder="New Password"
+                  {...register("password")}
                   required
                 />
               </div>
+              {errors.password && (
+                <Alert variant="destructive" className="mt-2">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>{errors.password.message}</AlertDescription>
+                </Alert>
+              )}
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Label htmlFor="confirmNewPassword">Confirm Password</Label>
                 <Input
-                  id="confirmPassword"
+                  id="confirmNewPassword"
                   type="password"
-                  placeholder="Confirm Password"
-                  value={password}
-                  onChange={(e) => setpassword(e.target.value)}
+                  placeholder="Confirm New Password"
+                  {...register("confirmPassword")}
                   required
                 />
               </div>
+              {errors.confirmPassword && (
+                <Alert variant="destructive" className="mt-2">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>
+                    {errors.confirmPassword.message}
+                  </AlertDescription>
+                </Alert>
+              )}
             </div>
-            {error && (
-              <Alert variant="destructive" className="mt-4">
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
+
             <Button className="w-full mt-4" type="submit">
               Confirm
             </Button>

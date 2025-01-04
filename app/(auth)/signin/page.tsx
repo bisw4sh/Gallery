@@ -1,7 +1,4 @@
 "use client";
-
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,24 +13,28 @@ import {
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import Link from "next/link";
+import { z } from "zod";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { signInAction } from "@/app/actions";
+
+export const signInSchema = z.object({
+  email: z.string().email("Enter a valid email"),
+  password: z.string().min(6),
+});
+type TSignIn = z.infer<typeof signInSchema>;
 
 export default function SignInPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const router = useRouter();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<TSignIn>({
+    resolver: zodResolver(signInSchema),
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-
-    if (!email || !password) {
-      setError("Please fill in all fields");
-      return;
-    }
-
-    console.log("Signing in with:", email, password);
-    router.push("/dashboard");
+  const onSubmit: SubmitHandler<TSignIn> = async (data: TSignIn) => {
+    await signInAction(data.email, data.password);
   };
 
   const handleGoogleSignIn = () => {
@@ -50,7 +51,7 @@ export default function SignInPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="email">Email</Label>
@@ -58,28 +59,32 @@ export default function SignInPage() {
                   id="email"
                   type="email"
                   placeholder="your@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
                   required
+                  {...register("email")}
                 />
               </div>
+              {errors.email && (
+                <Alert variant="destructive" className="mt-2">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>{errors.email.message}</AlertDescription>
+                </Alert>
+              )}
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="password">Password</Label>
                 <Input
                   id="password"
                   type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
                   required
+                  {...register("password")}
                 />
               </div>
+              {errors.password && (
+                <Alert variant="destructive" className="mt-2">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>{errors.password.message}</AlertDescription>
+                </Alert>
+              )}
             </div>
-            {error && (
-              <Alert variant="destructive" className="mt-4">
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
             <Button className="w-full mt-4" type="submit">
               Sign In
             </Button>
@@ -123,7 +128,7 @@ export default function SignInPage() {
             className="px-0 font-normal"
             onClick={() => console.log("Forgot password clicked")}
           >
-            <Link href="/password/reset">Forgot your password?</Link>
+            <Link href="/password/forgot">Forgot your password?</Link>
           </Button>
         </CardFooter>
         <CardFooter className="flex justify-center">
