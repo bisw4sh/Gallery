@@ -88,5 +88,4 @@ export const forgotPasswordAction = async (email: string) => {
 export const signOutAction = async () => {
   const supabase = await createClient();
   await supabase.auth.signOut();
-  return redirect("/signin");
 };

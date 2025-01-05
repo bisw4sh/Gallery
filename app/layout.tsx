@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import "./globals.css";
 import { IoIosAddCircle } from "react-icons/io";
-import { FaUserCircle } from "react-icons/fa";
-import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
+import Link from "next/link";
+import { FaUserCircle } from "react-icons/fa";
 import { LogOut } from "lucide-react";
 import {
   DropdownMenu,
@@ -14,6 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import "./globals.css";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -52,36 +52,38 @@ export default async function RootLayout({
               Gallery
             </Link>
             <div className="flex justify-center items-center gap-1">
-              {user ? (
+              {user && (
                 <Link href="/upload">
                   <IoIosAddCircle className="text-[40px] hover:fill-slate-500" />
                 </Link>
-              ) : null}
-              <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <Link href="/signin">
+              )}
+              {user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
                     <FaUserCircle className="text-[36px] hover:fill-slate-500" />
-                  </Link>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuLabel>
-                    {user?.email?.toString()}
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>Profile</DropdownMenuItem>
-                  <DropdownMenuItem>Dashboard</DropdownMenuItem>
-                  <DropdownMenuItem className="bg-rose-700 cursor-pointer">
-                    {user ? (
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuLabel>
+                      {user.email?.toString()}
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>Profile</DropdownMenuItem>
+                    <DropdownMenuItem>Dashboard</DropdownMenuItem>
+                    <DropdownMenuItem className="bg-rose-700 cursor-pointer">
                       <Link
                         className="flex items-center justify-between w-full"
-                        href="signout"
+                        href="/signout"
                       >
                         Sign Out <LogOut className="h-[1rem]" />
                       </Link>
-                    ) : null}
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Link href="/signin">
+                  <FaUserCircle className="text-[36px] hover:fill-slate-500" />
+                </Link>
+              )}
             </div>
           </nav>
           {children}
