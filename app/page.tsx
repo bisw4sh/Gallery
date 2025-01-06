@@ -35,7 +35,10 @@ export default function Home() {
     data: images,
     isLoading,
     error,
-  } = useQuery<ImageT[]>(["images"], fetchImages);
+  } = useQuery<ImageT[]>(["images"], fetchImages, {
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
 
   if (error) {
     return <div>Error fetching images: {(error as Error).message}</div>;
@@ -57,7 +60,8 @@ export default function Home() {
                   alt={image.name}
                   width={300}
                   height={300}
-                  className="object-cover rounded"
+                  className="object-cover rounded w-auto h-auto"
+                  priority
                 />
               </div>
               <h2 className="text-lg font-semibold mt-2">{image.name}</h2>
@@ -79,9 +83,9 @@ export default function Home() {
               <Image
                 src={image.link}
                 alt={image.name}
-                layout="fill"
-                objectFit="contain"
-                className="rounded"
+                fill
+                className="rounded object-contain"
+                priority
               />
             </div>
             <AlertDialogTitle className="hidden">{image.name}</AlertDialogTitle>
