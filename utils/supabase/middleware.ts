@@ -37,12 +37,18 @@ export const updateSession = async (request: NextRequest) => {
     const user = await supabase.auth.getUser();
 
     // Public routes
-    const publicRoutes = ["/", "/password/forgot", "/signin", "/signup"];
+    const publicRoutes = [
+      "/",
+      "/password/forgot",
+      "/signin",
+      "/signup",
+      "/api/images",
+    ];
     if (!publicRoutes.includes(request.nextUrl.pathname) && user.error) {
       // Redirect unauthenticated users trying to access private routes to /signin
       return NextResponse.redirect(new URL("/signin", request.url));
     }
-    
+
     return response;
   } catch (e) {
     // This is likely because you have not set up environment variables.
