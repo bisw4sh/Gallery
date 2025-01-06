@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { MdCloseFullscreen } from "react-icons/md";
 import { useQuery } from "react-query";
+import CardSkeleton from "@/components/CardSkeleton";
 
 export interface ImageT {
   id: bigint;
@@ -36,16 +37,12 @@ export default function Home() {
     error,
   } = useQuery<ImageT[]>(["images"], fetchImages);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
   if (error) {
     return <div>Error fetching images: {(error as Error).message}</div>;
   }
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <CardSkeleton />;
   }
 
   return (
