@@ -60,29 +60,33 @@ export default async function RootLayout({
                   </Link>
                 ) : null}
                 <DropdownMenu>
-                  <DropdownMenuTrigger>
+                  {user ? (
+                    <DropdownMenuTrigger>
+                      <FaUserCircle className="text-[36px] hover:fill-slate-500" />
+                    </DropdownMenuTrigger>
+                  ) : (
                     <Link href="/signin">
                       <FaUserCircle className="text-[36px] hover:fill-slate-500" />
                     </Link>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuLabel>
-                      {user?.email?.toString()}
-                    </DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem>Profile</DropdownMenuItem>
-                    <DropdownMenuItem>Dashboard</DropdownMenuItem>
-                    <DropdownMenuItem className="bg-rose-700 cursor-pointer">
-                      {user ? (
+                  )}
+                  {user && (
+                    <DropdownMenuContent>
+                      <DropdownMenuLabel>
+                        {user?.email?.toString()}
+                      </DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem>Profile</DropdownMenuItem>
+                      <DropdownMenuItem>Dashboard</DropdownMenuItem>
+                      <DropdownMenuItem className="bg-rose-700 cursor-pointer">
                         <Link
                           className="flex items-center justify-between w-full"
                           href="/signout"
                         >
                           Sign Out <LogOut className="h-[1rem]" />
                         </Link>
-                      ) : null}
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  )}
                 </DropdownMenu>
               </div>
             </nav>
