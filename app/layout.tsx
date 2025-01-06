@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import "./globals.css";
 import { IoIosAddCircle } from "react-icons/io";
-import { createClient } from "@/utils/supabase/server";
-import Link from "next/link";
 import { FaUserCircle } from "react-icons/fa";
+import Link from "next/link";
+import { createClient } from "@/utils/supabase/server";
 import { LogOut } from "lucide-react";
 import {
   DropdownMenu,
@@ -13,7 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import "./globals.css";
+import QueryProvider from "@/components/QueryProvider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -47,46 +48,46 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <main className="p-4">
-          <nav className="pb-5 flex justify-between items-center">
-            <Link href="/" className="text-2xl font-bold ">
-              Gallery
-            </Link>
-            <div className="flex justify-center items-center gap-1">
-              {user && (
-                <Link href="/upload">
-                  <IoIosAddCircle className="text-[40px] hover:fill-slate-500" />
-                </Link>
-              )}
-              {user ? (
+          <QueryProvider>
+            <nav className="pb-5 flex justify-between items-center">
+              <Link href="/" className="text-2xl font-bold ">
+                Gallery
+              </Link>
+              <div className="flex justify-center items-center gap-1">
+                {user ? (
+                  <Link href="/upload">
+                    <IoIosAddCircle className="text-[40px] hover:fill-slate-500" />
+                  </Link>
+                ) : null}
                 <DropdownMenu>
                   <DropdownMenuTrigger>
-                    <FaUserCircle className="text-[36px] hover:fill-slate-500" />
+                    <Link href="/signin">
+                      <FaUserCircle className="text-[36px] hover:fill-slate-500" />
+                    </Link>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
                     <DropdownMenuLabel>
-                      {user.email?.toString()}
+                      {user?.email?.toString()}
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem>Profile</DropdownMenuItem>
                     <DropdownMenuItem>Dashboard</DropdownMenuItem>
                     <DropdownMenuItem className="bg-rose-700 cursor-pointer">
-                      <Link
-                        className="flex items-center justify-between w-full"
-                        href="/signout"
-                      >
-                        Sign Out <LogOut className="h-[1rem]" />
-                      </Link>
+                      {user ? (
+                        <Link
+                          className="flex items-center justify-between w-full"
+                          href="/signout"
+                        >
+                          Sign Out <LogOut className="h-[1rem]" />
+                        </Link>
+                      ) : null}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-              ) : (
-                <Link href="/signin">
-                  <FaUserCircle className="text-[36px] hover:fill-slate-500" />
-                </Link>
-              )}
-            </div>
-          </nav>
-          {children}
+              </div>
+            </nav>
+            {children}
+          </QueryProvider>
         </main>
       </body>
     </html>
