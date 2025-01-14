@@ -18,3 +18,9 @@ model images {
   author     String
   tags       Json?    @db.Json
 }
+
+model users {
+  id         String   @id @default(dbgenerated("auth.uid()")) @db.Uuid
+  role       String?  @default("normal")
+  created_at DateTime @default(now()) @db.Timestamp(6)
+}
