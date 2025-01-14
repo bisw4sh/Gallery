@@ -15,12 +15,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import QueryProvider from "@/components/QueryProvider";
+import { Toaster } from "@/components/ui/sonner";
+import ErrorAlert from "@/components/ErrorAlert";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
   weight: "100 900",
 });
+
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
@@ -92,7 +95,9 @@ export default async function RootLayout({
             </nav>
             {children}
           </QueryProvider>
+          <ErrorAlert />
         </main>
+        <Toaster />
       </body>
     </html>
   );
