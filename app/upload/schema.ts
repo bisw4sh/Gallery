@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const schema = z.object({
-  name: z
+  title: z
     .string()
     .min(1, { message: "name lenghth should be atleast 1 character" })
     .max(50),
