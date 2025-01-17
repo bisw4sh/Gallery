@@ -21,6 +21,7 @@ import { Badge } from "@/components/ui/badge";
 import { createClient } from "@/utils/supabase/client";
 import { v4 as uuidv4 } from "uuid";
 import { ErrorMessage } from "@hookform/error-message";
+import { toast } from "sonner";
 
 let supabase: ReturnType<typeof createClient>;
 
@@ -41,16 +42,14 @@ export default function UploadPage() {
   });
 
   const onSubmit: SubmitHandler<Schema> = async (data) => {
-    console.log(data);
-
     if (supabase) {
       try {
-        const file = data.picture[0]; 
-        const filePath = `images/${uuidv4()}`; 
+        const file = data.picture[0];
+        const fileName = uuidv4();
 
         const { error: uploadError } = await supabase.storage
-          .from("imgSrc") 
-          .upload(filePath, file, {
+          .from("imgsrc")
+          .upload(fileName, file, {
             cacheControl: "3600",
             upsert: true,
           });
@@ -60,25 +59,22 @@ export default function UploadPage() {
           return;
         }
 
-        console.log("Image uploaded successfully!");
-
+        toast("Image uploaded successfully!");
         const { data: publicUrlData } = supabase.storage
-          .from("imgSrc") 
-          .getPublicUrl(filePath);
+          .from("imgsrc")
+          .getPublicUrl(fileName);
 
         const imageUrl = publicUrlData.publicUrl;
         console.log("Image URL:", imageUrl);
 
-        const { error: insertError } = await supabase
-          .from("images") 
-          .insert([
-            {
-              title: data.title,
-              author: data.author,
-              tags: data.tags,
-              image_url: imageUrl, 
-            },
-          ]);
+        const { error: insertError } = await supabase.from("images").insert([
+          {
+            title: data.title,
+            author: data.author,
+            tags: data?.tags?.split(" "),
+            link: imageUrl,
+          },
+        ]);
 
         if (insertError) {
           console.error("Database insert error:", insertError.message);

@@ -57,7 +57,7 @@ export default function Home() {
               <div className="w-full flex justify-center items-center">
                 <Image
                   src={image.link}
-                  alt={image.name}
+                  alt={image.name ?? "photo that couldn't be loaded"}
                   width={300}
                   height={300}
                   className="object-cover rounded w-auto h-auto"
@@ -82,7 +82,7 @@ export default function Home() {
             <div className="relative w-full h-full">
               <Image
                 src={image.link}
-                alt={image.name}
+                alt={image.name ?? "photo that couldn't be loaded"}
                 fill
                 className="rounded object-contain"
                 priority
