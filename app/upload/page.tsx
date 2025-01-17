@@ -6,6 +6,7 @@ import {
   Control,
   Controller,
   UseFormWatch,
+  FieldErrors,
 } from "react-hook-form";
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -19,13 +20,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { createClient } from "@/utils/supabase/client";
 import { v4 as uuidv4 } from "uuid";
+import { ErrorMessage } from "@hookform/error-message";
 
-let supabase: ReturnType<typeof createClient>; // Initialize outside React
+let supabase: ReturnType<typeof createClient>;
 
 export default function UploadPage() {
-  const [img, setImg] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   useEffect(() => {
-    supabase = createClient(); // Initialize client on the client-side
+    supabase = createClient();
   }, []);
 
   const {
@@ -37,33 +39,69 @@ export default function UploadPage() {
   } = useForm<Schema>({
     resolver: zodResolver(schema),
   });
+
   const onSubmit: SubmitHandler<Schema> = async (data) => {
     console.log(data);
+
     if (supabase) {
-      const { error } = await supabase.storage
-        .from("gallery")
-        .upload(`images/${uuidv4()}`, data?.picture[0], {
-          cacheControl: "3600",
-          upsert: true,
-        });
-      if (error) {
-        console.error(error.message);
-      } else {
+      try {
+        const file = data.picture[0]; 
+        const filePath = `images/${uuidv4()}`; 
+
+        const { error: uploadError } = await supabase.storage
+          .from("imgSrc") 
+          .upload(filePath, file, {
+            cacheControl: "3600",
+            upsert: true,
+          });
+
+        if (uploadError) {
+          console.error("Upload error:", uploadError.message);
+          return;
+        }
+
         console.log("Image uploaded successfully!");
+
+        const { data: publicUrlData } = supabase.storage
+          .from("imgSrc") 
+          .getPublicUrl(filePath);
+
+        const imageUrl = publicUrlData.publicUrl;
+        console.log("Image URL:", imageUrl);
+
+        const { error: insertError } = await supabase
+          .from("images") 
+          .insert([
+            {
+              title: data.title,
+              author: data.author,
+              tags: data.tags,
+              image_url: imageUrl, 
+            },
+          ]);
+
+        if (insertError) {
+          console.error("Database insert error:", insertError.message);
+          return;
+        }
+
+        console.log("Data inserted successfully!");
+      } catch (error) {
+        console.error("An error occurred:", error);
       }
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImg(URL.createObjectURL(file));
-    } else {
-      setImg(null);
-    }
-  };
+  const imgPreview = watch("picture");
+  useEffect(() => {
+    if (imgPreview && imgPreview.length > 0) {
+      const file = imgPreview[0];
+      const url = URL.createObjectURL(file);
+      setImageUrl(url);
 
-  console.log(watch("title"));
+      return () => URL.revokeObjectURL(url);
+    }
+  }, [imgPreview]);
 
   return (
     <main className="h-screen w-full flex justify-center items-start pt-[3rem]">
@@ -79,6 +117,7 @@ export default function UploadPage() {
             <div>
               <Label htmlFor="name">Photograph Title</Label>
               <Input {...register("title")} id="name" placeholder="name" />
+              <ErrorMessage errors={errors} name="title" />
             </div>
 
             <div>
@@ -88,18 +127,23 @@ export default function UploadPage() {
                 id="author"
                 placeholder="author"
               />
-              {errors.author && <span>This field is required</span>}
+              <ErrorMessage errors={errors} name="author" />
             </div>
 
             <div>
               <Label htmlFor="picture">Picture</Label>
-              <Input id="picture" type="file" onChange={handleFileChange} />
+              <Input
+                id="picture"
+                type="file"
+                {...register("picture", { required: true })}
+              />
+              <ErrorMessage errors={errors} name="picture" />
             </div>
 
-            {img && (
+            {imageUrl && (
               <div className="relative w-full">
                 <Image
-                  src={img}
+                  src={imageUrl}
                   alt="selected image"
                   width={50}
                   height={0}
@@ -109,7 +153,7 @@ export default function UploadPage() {
               </div>
             )}
 
-            <Tags control={control} watch={watch} />
+            <Tags control={control} watch={watch} errors={errors} />
 
             <Button type="submit">Submit</Button>
           </form>
@@ -123,11 +167,13 @@ export default function UploadPage() {
 function Tags({
   control,
   watch,
+  errors,
 }: {
   control: Control<Schema>;
   watch: UseFormWatch<Schema>;
+  errors: FieldErrors<Schema>;
 }) {
-  const tags = watch("tags", ""); // Watch the "tags" field with an empty string as the default
+  const tags = watch("tags", "");
 
   return (
     <div className="flex flex-col gap-1">
@@ -136,18 +182,16 @@ function Tags({
         name="tags"
         control={control}
         rules={{ required: "Tags are required" }}
-        render={({ field, fieldState: { error } }) => (
+        render={({ field }) => (
           <>
             <Input
               id="tags"
               type="text"
-              placeholder="space seperated tags"
+              placeholder="space separated tags"
               value={field.value || ""}
               onChange={(e) => field.onChange(e.target.value)}
             />
-            {error && (
-              <span className="text-red-500 text-sm">{error.message}</span>
-            )}
+            <ErrorMessage errors={errors} name="tags" />
           </>
         )}
       />
