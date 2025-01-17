@@ -7,7 +7,7 @@ import {
   Controller,
   UseFormWatch,
 } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { DevTool } from "@hookform/devtools";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,9 +17,16 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { createClient } from "@/utils/supabase/client";
+import { v4 as uuidv4 } from "uuid";
+
+let supabase: ReturnType<typeof createClient>; // Initialize outside React
 
 export default function UploadPage() {
   const [img, setImg] = useState<string | null>(null);
+  useEffect(() => {
+    supabase = createClient(); // Initialize client on the client-side
+  }, []);
 
   const {
     register,
@@ -30,7 +37,22 @@ export default function UploadPage() {
   } = useForm<Schema>({
     resolver: zodResolver(schema),
   });
-  const onSubmit: SubmitHandler<Schema> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<Schema> = async (data) => {
+    console.log(data);
+    if (supabase) {
+      const { error } = await supabase.storage
+        .from("gallery")
+        .upload(`images/${uuidv4()}`, data?.picture[0], {
+          cacheControl: "3600",
+          upsert: true,
+        });
+      if (error) {
+        console.error(error.message);
+      } else {
+        console.log("Image uploaded successfully!");
+      }
+    }
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -41,7 +63,7 @@ export default function UploadPage() {
     }
   };
 
-  console.log(watch("name"));
+  console.log(watch("title"));
 
   return (
     <main className="h-screen w-full flex justify-center items-start pt-[3rem]">
@@ -56,7 +78,7 @@ export default function UploadPage() {
           >
             <div>
               <Label htmlFor="name">Photograph Title</Label>
-              <Input {...register("name")} id="name" placeholder="name" />
+              <Input {...register("title")} id="name" placeholder="name" />
             </div>
 
             <div>
@@ -119,7 +141,7 @@ function Tags({
             <Input
               id="tags"
               type="text"
-              placeholder="tags"
+              placeholder="space seperated tags"
               value={field.value || ""}
               onChange={(e) => field.onChange(e.target.value)}
             />
