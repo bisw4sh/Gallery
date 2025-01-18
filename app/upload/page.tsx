@@ -67,7 +67,7 @@ export default function UploadPage() {
         const imageUrl = publicUrlData.publicUrl;
         console.log("Image URL:", imageUrl);
 
-        const { error: insertError } = await supabase.from("images").insert([
+        const { error: insertError } = await supabase.from("temp_images").insert([
           {
             title: data.title,
             author: data.author,
@@ -77,11 +77,11 @@ export default function UploadPage() {
         ]);
 
         if (insertError) {
-          console.error("Database insert error:", insertError.message);
+          toast("Database entry was unsuccessful :  " + insertError.message);
           return;
         }
 
-        console.log("Data inserted successfully!");
+        toast("Database entry was successful");
       } catch (error) {
         console.error("An error occurred:", error);
       }
