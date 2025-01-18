@@ -16,13 +16,13 @@ import CardSkeleton from "@/components/CardSkeleton";
 export interface ImageT {
   id: bigint;
   created_at: string;
-  name: string;
+  title: string;
   link: string;
   author: string;
   tags?: string[] | null;
 }
 
-const fetchImages = async () => {
+export const fetchImages = async () => {
   const response = await fetch("/api/images");
   if (!response.ok) {
     throw new Error("Failed to fetch images");
@@ -57,14 +57,14 @@ export default function Home() {
               <div className="w-full flex justify-center items-center">
                 <Image
                   src={image.link}
-                  alt={image.name ?? "photo that couldn't be loaded"}
+                  alt={image.title ?? "photo that couldn't be loaded"}
                   width={300}
                   height={300}
                   className="object-cover rounded w-auto h-auto"
                   priority
                 />
               </div>
-              <h2 className="text-lg font-semibold mt-2">{image.name}</h2>
+              <h2 className="text-lg font-semibold mt-2">{image.title}</h2>
               <p className="text-sm text-gray-600">@{image.author}</p>
               {Array.isArray(image.tags) &&
                 image.tags.every((tag) => typeof tag === "string") && (
@@ -82,13 +82,15 @@ export default function Home() {
             <div className="relative w-full h-full">
               <Image
                 src={image.link}
-                alt={image.name ?? "photo that couldn't be loaded"}
+                alt={image.title ?? "photo that couldn't be loaded"}
                 fill
                 className="rounded object-contain"
                 priority
               />
             </div>
-            <AlertDialogTitle className="hidden">{image.name}</AlertDialogTitle>
+            <AlertDialogTitle className="hidden">
+              {image.title}
+            </AlertDialogTitle>
             <AlertDialogCancel className="absolute top-5 right-5 z-10 border-none rounded-full w-[2.6rem] h-[2.6rem] opacity-70">
               <MdCloseFullscreen className="hover:scale-50" />
             </AlertDialogCancel>
