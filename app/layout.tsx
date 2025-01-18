@@ -78,8 +78,15 @@ export default async function RootLayout({
                         {user?.email?.toString()}
                       </DropdownMenuLabel>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem>Profile</DropdownMenuItem>
-                      <DropdownMenuItem>Dashboard</DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <Link href="profile">Profile</Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <Link href="panel">Panel</Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <Link href="dashboard">Dashboard</Link>
+                      </DropdownMenuItem>
                       <DropdownMenuItem className="bg-rose-700 cursor-pointer">
                         <Link
                           className="flex items-center justify-between w-full"
