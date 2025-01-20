@@ -44,9 +44,6 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.62.2
         version: 5.62.2(react@19.0.0-rc-66855b96-20241106)
-      add:
-        specifier: ^2.0.6
-        version: 2.0.6
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -77,9 +74,6 @@ importers:
       react-hook-form:
         specifier: ^7.53.2
         version: 7.53.2(react@19.0.0-rc-66855b96-20241106)
-      react-icons:
-        specifier: ^5.4.0
-        version: 5.4.0(react@19.0.0-rc-66855b96-20241106)
       react-query:
         specifier: ^3.39.3
         version: 3.39.3(react-dom@19.0.0-rc-66855b96-20241106(react@19.0.0-rc-66855b96-20241106))(react@19.0.0-rc-66855b96-20241106)
@@ -123,9 +117,6 @@ importers:
       postcss:
         specifier: ^8.4.49
         version: 8.4.49
-      prisma:
-        specifier: ^6.0.1
-        version: 6.0.1
       tailwindcss:
         specifier: ^3.4.16
         version: 3.4.16
@@ -1166,9 +1157,6 @@ packages:
     resolution: {integrity: sha512-cl669nCJTZBsL97OF4kUQm5g5hC2uihk0NxY3WENAC0TYdILVkAyHymAntgxGkl7K+t0cXIrH5siy5S4XkFycA==}
     engines: {node: '>=0.4.0'}
     hasBin: true
-
-  add@2.0.6:
-    resolution: {integrity: sha512-j5QzrmsokwWWp6kUcJQySpbG+xfOBqqKnup3OIk1pz+kB/80SLorZ9V8zHFLO92Lcd+hbvq8bT+zOGoPkmBV0Q==}
 
   agent-base@7.1.1:
     resolution: {integrity: sha512-H0TSyFNDMomMNJQBn8wFV5YC/2eJ+VXECwOadZJT554xP6cODZHPX3H9QMQECxvrgiSOP1pHjy1sMWQVYJOUOA==}
@@ -2558,11 +2546,6 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18 || ^19
 
-  react-icons@5.4.0:
-    resolution: {integrity: sha512-7eltJxgVt7X64oHh6wSWNwwbKTCtMfK35hcjvJS0yxEAhPM8oUKdS3+kqaW1vicIltw+kR2unHaa12S9pPALoQ==}
-    peerDependencies:
-      react: '*'
-
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
@@ -3617,9 +3600,11 @@ snapshots:
     optionalDependencies:
       prisma: 6.0.1
 
-  '@prisma/debug@6.0.1': {}
+  '@prisma/debug@6.0.1':
+    optional: true
 
-  '@prisma/engines-version@5.23.0-27.5dbef10bdbfb579e07d35cc85fb1518d357cb99e': {}
+  '@prisma/engines-version@5.23.0-27.5dbef10bdbfb579e07d35cc85fb1518d357cb99e':
+    optional: true
 
   '@prisma/engines@6.0.1':
     dependencies:
@@ -3627,16 +3612,19 @@ snapshots:
       '@prisma/engines-version': 5.23.0-27.5dbef10bdbfb579e07d35cc85fb1518d357cb99e
       '@prisma/fetch-engine': 6.0.1
       '@prisma/get-platform': 6.0.1
+    optional: true
 
   '@prisma/fetch-engine@6.0.1':
     dependencies:
       '@prisma/debug': 6.0.1
       '@prisma/engines-version': 5.23.0-27.5dbef10bdbfb579e07d35cc85fb1518d357cb99e
       '@prisma/get-platform': 6.0.1
+    optional: true
 
   '@prisma/get-platform@6.0.1':
     dependencies:
       '@prisma/debug': 6.0.1
+    optional: true
 
   '@radix-ui/primitive@1.1.0': {}
 
@@ -4213,8 +4201,6 @@ snapshots:
       acorn: 8.14.0
 
   acorn@8.14.0: {}
-
-  add@2.0.6: {}
 
   agent-base@7.1.1:
     dependencies:
@@ -5717,6 +5703,7 @@ snapshots:
       '@prisma/engines': 6.0.1
     optionalDependencies:
       fsevents: 2.3.3
+    optional: true
 
   prompts@2.4.2:
     dependencies:
@@ -5739,10 +5726,6 @@ snapshots:
       scheduler: 0.25.0-rc-66855b96-20241106
 
   react-hook-form@7.53.2(react@19.0.0-rc-66855b96-20241106):
-    dependencies:
-      react: 19.0.0-rc-66855b96-20241106
-
-  react-icons@5.4.0(react@19.0.0-rc-66855b96-20241106):
     dependencies:
       react: 19.0.0-rc-66855b96-20241106
 

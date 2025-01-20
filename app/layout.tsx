@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { IoIosAddCircle } from "react-icons/io";
-import { FaUserCircle } from "react-icons/fa";
+import { CirclePlus, CircleUser } from "lucide-react";
+
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import { LogOut } from "lucide-react";
@@ -59,17 +59,17 @@ export default async function RootLayout({
               <div className="flex justify-center items-center gap-1">
                 {user ? (
                   <Link href="/upload">
-                    <IoIosAddCircle className="text-[40px] hover:fill-slate-500" />
+                    <CirclePlus className="text-[40px] hover:fill-slate-800 hover:stroke-slate-50 hover:scale-125" />
                   </Link>
                 ) : null}
                 <DropdownMenu>
                   {user ? (
                     <DropdownMenuTrigger>
-                      <FaUserCircle className="text-[36px] hover:fill-slate-500" />
+                      <CircleUser className="text-[36px] hover:fill-slate-800 hover:stroke-slate-50 hover:scale-125" />
                     </DropdownMenuTrigger>
                   ) : (
                     <Link href="/signin">
-                      <FaUserCircle className="text-[36px] hover:fill-slate-500" />
+                      <CircleUser className="text-[36px] hover:fill-slate-800 hover:stroke-slate-50 hover:scale-125" />
                     </Link>
                   )}
                   {user && (

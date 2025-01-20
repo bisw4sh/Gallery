@@ -9,7 +9,7 @@ import {
   AlertDialogTrigger,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { MdCloseFullscreen } from "react-icons/md";
+import { Minimize } from "lucide-react";
 import { useQuery } from "react-query";
 import CardSkeleton from "@/components/CardSkeleton";
 
@@ -92,7 +92,7 @@ export default function Home() {
               {image.title}
             </AlertDialogTitle>
             <AlertDialogCancel className="absolute top-5 right-5 z-10 border-none rounded-full w-[2.6rem] h-[2.6rem] opacity-70">
-              <MdCloseFullscreen className="hover:scale-50" />
+              <Minimize className="hover:scale-50" size={100}/>
             </AlertDialogCancel>
           </AlertDialogContent>
         </AlertDialog>
