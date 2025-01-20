@@ -22,6 +22,7 @@ import { createClient } from "@/utils/supabase/client";
 import { v4 as uuidv4 } from "uuid";
 import { ErrorMessage } from "@hookform/error-message";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 let supabase: ReturnType<typeof createClient>;
 
@@ -40,6 +41,7 @@ export default function UploadPage() {
   } = useForm<Schema>({
     resolver: zodResolver(schema),
   });
+  const router = useRouter();
 
   const onSubmit: SubmitHandler<Schema> = async (data) => {
     if (supabase) {
@@ -67,14 +69,16 @@ export default function UploadPage() {
         const imageUrl = publicUrlData.publicUrl;
         console.log("Image URL:", imageUrl);
 
-        const { error: insertError } = await supabase.from("temp_images").insert([
-          {
-            title: data.title,
-            author: data.author,
-            tags: data?.tags?.split(" "),
-            link: imageUrl,
-          },
-        ]);
+        const { error: insertError } = await supabase
+          .from("temp_images")
+          .insert([
+            {
+              title: data.title,
+              author: data.author,
+              tags: data?.tags?.split(" "),
+              link: imageUrl,
+            },
+          ]);
 
         if (insertError) {
           toast("Database entry was unsuccessful :  " + insertError.message);
@@ -82,6 +86,7 @@ export default function UploadPage() {
         }
 
         toast("Database entry was successful");
+        router.push("/");
       } catch (error) {
         console.error("An error occurred:", error);
       }
