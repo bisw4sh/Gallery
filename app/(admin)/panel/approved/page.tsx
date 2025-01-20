@@ -31,6 +31,8 @@ import { type ImageT, fetchImages } from "@/app/page";
 import { useQuery } from "react-query";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
+import { deleteApprovedImage } from "./action";
 
 export default function Approved() {
   const {
@@ -49,6 +51,25 @@ export default function Approved() {
   if (isLoading) {
     return <p>Is loading</p>;
   }
+
+  const handleApproveDelete = async (id: string) => {
+    try {
+      const result = await deleteApprovedImage(id);
+
+      if (result.success) {
+        toast.success("Image deleted successfully!");
+      } else {
+        toast.error(`Couldn't delete the image: ${result.error}`);
+      }
+    } catch (error) {
+      console.error("Client Error:", error);
+      toast.error(
+        `An unexpected error occurred while deleting the image: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
+    }
+  };
 
   return (
     <main className="w-full flex flex-col justify-center items-center gap-4">
@@ -131,7 +152,9 @@ export default function Approved() {
                       <DialogFooter className="mt-4">
                         <Button
                           variant="destructive"
-                          onClick={() => console.log("Post Deleted")}
+                          onClick={() =>
+                            handleApproveDelete(image.id.toString())
+                          }
                         >
                           Delete
                         </Button>
