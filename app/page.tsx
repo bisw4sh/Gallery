@@ -70,6 +70,7 @@ export default function Home() {
                 image.tags.every((tag) => typeof tag === "string") && (
                   <section className="text-xs text-gray-500 mt-1">
                     {image.tags.map((tag: string, idx: number) => (
+                      // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                       <Badge variant="secondary" key={idx}>
                         {tag}
                       </Badge>
@@ -92,7 +93,7 @@ export default function Home() {
               {image.title}
             </AlertDialogTitle>
             <AlertDialogCancel className="absolute top-5 right-5 z-10 border-none rounded-full w-[2.6rem] h-[2.6rem] opacity-70">
-              <Minimize className="hover:scale-50" size={100}/>
+              <Minimize className="hover:scale-50" size={100} />
             </AlertDialogCancel>
           </AlertDialogContent>
         </AlertDialog>
