@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
-import { type ImageT } from "@/app/page";
+import type { ImageT } from "@/app/page";
 import { useQuery } from "react-query";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
@@ -48,7 +48,7 @@ export default function Unapproved() {
     isLoading,
     error,
   } = useQuery<ImageT[]>(["temp_images"], fetchTempImages, {
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
     refetchOnReconnect: false,
   });
 
@@ -81,7 +81,9 @@ export default function Unapproved() {
 
   return (
     <main className="w-full flex flex-col justify-center items-center gap-4">
-      <h1 className="pt-4 text-xl font-semibold">Unapproved Images in waiting</h1>
+      <h1 className="pt-4 text-xl font-semibold">
+        Unapproved Images in waiting
+      </h1>
       <div className="w-11/12 py-4 overflow-x-auto">
         <Table>
           <TableHeader>
