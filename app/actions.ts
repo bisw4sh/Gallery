@@ -17,15 +17,14 @@ export const signUpAction = async (email: string, password: string) => {
   });
 
   if (error) {
-    console.error(error.code + " " + error.message);
+    console.error(`${error.code} ${error.message}`);
     return encodedRedirect("error", "/signup", error.message);
-  } else {
+  }
     return encodedRedirect(
       "success",
       "/signup",
       "Thanks for signing up! Please check your email for a verification link."
     );
-  }
 };
 
 export const signInAction = async (email: string, password: string) => {

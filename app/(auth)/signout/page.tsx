@@ -21,7 +21,7 @@ export default function SignOutPage() {
 
   return (
     <div className="flex justify-center items-center h-screen">
-      <l-waveform size="250" stroke="35" speed="2" color="black"></l-waveform>
+      <l-waveform size="250" stroke="35" speed="2" color="black" />
     </div>
   );
 }

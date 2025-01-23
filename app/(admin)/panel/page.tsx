@@ -16,7 +16,7 @@ export default function ApprovalDashboard() {
           bg-opacity="0.1"
           speed="1.4"
           color="black"
-        ></l-trefoil>
+        />
       </div>
     </main>
   );

@@ -2,17 +2,17 @@
 
 import {
   useForm,
-  SubmitHandler,
-  Control,
+  type SubmitHandler,
+  type Control,
   Controller,
-  UseFormWatch,
-  FieldErrors,
+  type UseFormWatch,
+  type FieldErrors,
 } from "react-hook-form";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { DevTool } from "@hookform/devtools";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { schema, Schema } from "./schema";
+import { schema, type Schema } from "./schema";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -81,7 +81,7 @@ export default function UploadPage() {
           ]);
 
         if (insertError) {
-          toast("Database entry was unsuccessful :  " + insertError.message);
+          toast(`Database entry was unsuccessful : ${insertError.message}`);
           return;
         }
 
@@ -201,7 +201,7 @@ function Tags({
           ?.split(" ")
           .filter((tag) => tag.trim() !== "")
           .map((tag, idx) => (
-            <Badge key={idx} variant="secondary">
+            <Badge key={idx + tag} variant="secondary">
               {tag.trim()}
             </Badge>
           ))}
