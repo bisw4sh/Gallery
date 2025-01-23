@@ -41,27 +41,27 @@ interface TUser {
 export const fetchUsers = async () => {
   const response = await fetch("/api/users");
   if (!response.ok) {
-    throw new Error("Failed to fetch images");
+    throw new Error("Failed to fetch users");
   }
   return response.json();
 };
 
-export default function Unapproved() {
+export default function Users() {
   const {
     data: users,
     isLoading,
     error,
-  } = useQuery<TUser[]>(["temp_images"], fetchUsers, {
+  } = useQuery<TUser[]>(["users"], fetchUsers, {
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
   });
 
   if (error) {
-    return <div>Error fetching images: {(error as Error).message}</div>;
+    return <div>Error fetching users: {(error as Error).message}</div>;
   }
 
   if (isLoading) {
-    return <p>Is loading</p>;
+    return <p>Loading...</p>;
   }
 
   const handleUserBan = async (id: string) => {
@@ -69,14 +69,14 @@ export default function Unapproved() {
       const result = await deleteUser(id);
 
       if (result.success) {
-        toast.success("Image deleted successfully!");
+        toast.success("User deleted successfully!");
       } else {
-        toast.error(`Couldn't delete the image: ${result.error}`);
+        toast.error(`Couldn't delete the user: ${result.error}`);
       }
     } catch (error) {
       console.error("Client Error:", error);
       toast.error(
-        `An unexpected error occurred while deleting the image: ${
+        `An unexpected error occurred: ${
           error instanceof Error ? error.message : "Unknown error"
         }`
       );
@@ -85,16 +85,14 @@ export default function Unapproved() {
 
   return (
     <main className="w-full flex flex-col justify-center items-center gap-4">
-      <h1 className="pt-4 text-xl font-semibold">
-        Unapproved Images in waiting
-      </h1>
+      <h1 className="pt-4 text-xl font-semibold">User Management</h1>
       <div className="w-11/12 py-4 overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead className="w-1/3">ID</TableHead>
               <TableHead className="w-1/3">Role</TableHead>
-              <TableHead className="w-1/3">Show Details</TableHead>
+              <TableHead className="w-1/3">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -113,19 +111,37 @@ export default function Unapproved() {
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[425px]">
                       <DialogHeader>
-                        <DialogTitle>Perform Actions on the User</DialogTitle>
+                        <DialogTitle>User Details</DialogTitle>
                         <DialogDescription>
-                          Following are the details of the inquired user.
+                          Perform actions on the selected user.
                         </DialogDescription>
                       </DialogHeader>
                       <div className="space-y-4">
+                        {/* Dynamic User Info */}
+                        <p>
+                          <strong>ID:</strong> {user.id}
+                        </p>
+                        <p>
+                          <strong>Role:</strong> {user.role}
+                        </p>
                         <CardSkeleton />
                       </div>
                       <DialogFooter className="mt-4">
-                        {user.role !== "admin" ? (
-                          <Button variant="destructive">Ban</Button>
+                        {user.role === "normal" ? (
+                          <Button
+                            variant="destructive"
+                            onClick={() => handleUserBan(user.id)}
+                          >
+                            Ban User
+                          </Button>
                         ) : (
-                          <Button>Make Admin</Button>
+                          <Button
+                            variant="outline"
+                            disabled
+                            title="Admins cannot be banned"
+                          >
+                            Admin
+                          </Button>
                         )}
                       </DialogFooter>
                     </DialogContent>
