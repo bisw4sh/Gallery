@@ -12,15 +12,7 @@ import {
 import { Minimize } from "lucide-react";
 import { useQuery } from "react-query";
 import CardSkeleton from "@/components/CardSkeleton";
-
-export interface ImageT {
-  id: bigint;
-  created_at: string;
-  title: string;
-  link: string;
-  author: string;
-  tags?: string[] | null;
-}
+import { ImageT } from "./constants/images.constants";
 
 export const fetchImages = async () => {
   const response = await fetch("/api/images");

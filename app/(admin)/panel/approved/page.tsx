@@ -27,12 +27,13 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
-import { type ImageT, fetchImages } from "@/app/page";
+import { fetchImages } from "@/app/page";
 import { useQuery } from "react-query";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { deleteApprovedImage } from "./action";
+import { ImageT } from "@/app/constants/images.constants";
 
 export default function Approved() {
   const {
