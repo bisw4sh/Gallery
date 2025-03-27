@@ -29,6 +29,16 @@ CREATE TABLE temp_images (
 -- Enable Row-Level Security (RLS) on the images table
 ALTER TABLE images ENABLE ROW LEVEL SECURITY;
 
+-- Enable Row-Level Security (RLS) if not done already
+ALTER TABLE temp_images ENABLE ROW LEVEL SECURITY;
+
+-- Create or modify the policy for INSERT
+CREATE POLICY temp_images_insert_policy
+ON temp_images
+FOR INSERT
+WITH CHECK (auth.role() IS NOT NULL);  -- Allow only authenticated users
+
+
 -- Drop and create the policy for public read access on images
 DROP POLICY IF EXISTS "Public read access on images" ON images;
 CREATE POLICY "Public read access on images"
