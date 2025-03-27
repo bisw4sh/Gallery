@@ -27,12 +27,12 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
-import type { ImageT } from "@/app/page";
 import { useQuery } from "react-query";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { deleteUnApprovedImage } from "./action";
+import { approveUnApprovedImage, deleteUnApprovedImage } from "./action";
+import { ImageT } from "@/app/constants/images.constants";
 
 export const fetchTempImages = async () => {
   const response = await fetch("/api/temp-images");
@@ -66,6 +66,25 @@ export default function Unapproved() {
 
       if (result.success) {
         toast.success("Image deleted successfully!");
+      } else {
+        toast.error(`Couldn't delete the image: ${result.error}`);
+      }
+    } catch (error) {
+      console.error("Client Error:", error);
+      toast.error(
+        `An unexpected error occurred while deleting the image: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
+    }
+  };
+
+  const handleUnapprovedImage = async (id: string) => {
+    try {
+      const result = await approveUnApprovedImage(id);
+
+      if (result.success) {
+        toast.success("Image approved");
       } else {
         toast.error(`Couldn't delete the image: ${result.error}`);
       }
@@ -162,7 +181,9 @@ export default function Unapproved() {
                       <DialogFooter className="mt-4">
                         <Button
                           variant="default"
-                          onClick={() => console.log("approved")}
+                          onClick={() =>
+                            handleUnapprovedImage(image.id.toString())
+                          }
                         >
                           Approve
                         </Button>
