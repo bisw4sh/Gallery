@@ -1,5 +1,5 @@
 "use server";
-import { createClient } from "@/utils/supabase/server";
+import { createAdminClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 
 export const fetchUsers = async () => {
@@ -14,70 +14,71 @@ export async function deleteUser(
   id: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const supabase = await createClient();
-    const session = await supabase.auth.getUser();
+    const supabase = await createAdminClient();
 
-    if (!session.data.user) {
-      return { success: false, error: "User is not authenticated" };
-    }
+    console.log("Deletion Attempt - User ID:", id);
 
-    const performerId = session.data.user.id;
-
-    const { data: performer, error: performerError } = await supabase
+    const authCheck = await supabase.auth.admin.getUserById(id);
+    const usersTableCheck = await supabase
       .from("users")
-      .select("role")
-      .eq("id", performerId)
-      .single();
-
-    if (performerError || !performer) {
-      return {
-        success: false,
-        error: performerError?.message || "Failed to fetch performer's role",
-      };
-    }
-
-    const { data: target, error: targetError } = await supabase
-      .from("users")
-      .select("role")
+      .select("*")
       .eq("id", id)
       .single();
 
-    if (targetError || !target) {
-      return {
-        success: false,
-        error: targetError?.message || "Failed to fetch target user's role",
+    console.log("Auth User Existence:", !!authCheck.data);
+    console.log("Users Table Existence:", !!usersTableCheck.data);
+
+    console.log("Session Revocation: Skipped (Method not available)");
+
+    const tempImagesDelete = await supabase
+      .from("temp_images")
+      .delete()
+      .eq("user_id", id);
+    console.log("Temp Images Deletion:", tempImagesDelete.error || "Success");
+
+    const imagesDelete = await supabase
+      .from("images")
+      .delete()
+      .eq("user_id", id);
+    console.log("Images Deletion:", imagesDelete.error || "Success");
+
+    const usersDelete = await supabase
+      .from("users")
+      .delete()
+      .eq("id", id);
+    
+    if (usersDelete.error) {
+      console.error("Users Table Deletion Error:", usersDelete.error);
+      return { 
+        success: false, 
+        error: `Users Table Deletion Failed: ${usersDelete.error.message}`
       };
     }
 
-    if (performer.role === "user") {
-      return {
-        success: false,
-        error: "You do not have permission to perform this action",
+    const authDelete = await supabase.auth.admin.deleteUser(id);
+    
+    if (authDelete.error) {
+      console.error("Auth Deletion Error:", authDelete.error);
+      return { 
+        success: false, 
+        error: `Auth Deletion Failed: ${authDelete.error.message}`
       };
-    }
-
-    if (performer.role === "admin" && target.role === "admin") {
-      return {
-        success: false,
-        error: "Admins cannot delete other admins",
-      };
-    }
-
-    const { error: deleteError } = await supabase.from("users").delete().eq("id", id);
-
-    if (deleteError) {
-      return { success: false, error: deleteError.message };
     }
 
     revalidatePath("/panel/users");
-    return { success: true };
+
+    return { 
+      success: true,
+      error: undefined
+    };
+
   } catch (error) {
+    console.error("Comprehensive Deletion Error:", error);
     return {
       success: false,
-      error:
-        error instanceof Error
-          ? error.message
-          : "Unexpected error occurred when deleting a user",
+      error: error instanceof Error 
+        ? `Unexpected Error: ${error.message}` 
+        : "Comprehensive User Deletion Failed"
     };
   }
 }
