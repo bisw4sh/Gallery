@@ -17,8 +17,23 @@ export async function deleteUnApprovedImage(
 ): Promise<{ success: boolean; error?: string }> {
   try {
     const supabase = await createClient();
-    const { error } = await supabase.from("temp_images").delete().eq("id", id);
 
+    const { data: user, error: userError } = await supabase.auth.getUser();
+    if (userError || !user?.user) {
+      return { success: false, error: "Unauthorized access" };
+    }
+
+    const { data: userData, error: roleError } = await supabase
+      .from("users")
+      .select("role")
+      .eq("id", user.user.id)
+      .single();
+
+    if (roleError || !userData || userData.role !== "admin") {
+      return { success: false, error: "Permission denied" };
+    }
+
+    const { error } = await supabase.from("temp_images").delete().eq("id", id);
     if (error) {
       return { success: false, error: error.message };
     }
@@ -39,6 +54,21 @@ export async function approveUnApprovedImage(
 ): Promise<{ success: boolean; error?: string; message?: string }> {
   try {
     const supabase = await createClient();
+
+    const { data: user, error: userError } = await supabase.auth.getUser();
+    if (userError || !user?.user) {
+      return { success: false, error: "Unauthorized access" };
+    }
+
+    const { data: userData, error: roleError } = await supabase
+      .from("users")
+      .select("role")
+      .eq("id", user.user.id)
+      .single();
+
+    if (roleError || !userData || userData.role !== "admin") {
+      return { success: false, error: "Permission denied" };
+    }
 
     const { data, error } = await supabase
       .from("temp_images")
