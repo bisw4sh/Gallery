@@ -49,8 +49,12 @@ export const updateSession = async (request: NextRequest) => {
       "/password/forgot",
       "/signin",
       "/signup",
-      "/api/images",
+      "/api/images",  // API route
+      "/api/images/[userid]",  // API route
+      "/images/[userid]", // Add this route for the client-side images route
+      "/public",
     ];
+
     if (!publicRoutes.includes(request.nextUrl.pathname) && user.error) {
       // Redirect unauthenticated users trying to access private routes to /signin
       return NextResponse.redirect(new URL("/signin", request.url));

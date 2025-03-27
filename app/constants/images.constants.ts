@@ -6,4 +6,5 @@ export interface ImageT {
   link: string;
   author: string;
   tags?: string[] | null;
+  user_id: string
 }
