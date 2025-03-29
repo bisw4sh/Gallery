@@ -79,13 +79,13 @@ export default async function RootLayout({
                       </DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem>
-                        <Link href="profile">Profile</Link>
+                        <Link href="/profile">Profile</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem>
-                        <Link href="panel">Panel</Link>
+                        <Link href="/panel">Panel</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem>
-                        <Link href="dashboard">Dashboard</Link>
+                        <Link href="/dashboard">Dashboard</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem className="bg-rose-700 cursor-pointer">
                         <Link
