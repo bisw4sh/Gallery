@@ -34,15 +34,15 @@ import { toast } from "sonner";
 import { approveUnApprovedImage, deleteUnApprovedImage } from "./action";
 import { ImageT } from "@/app/constants/images.constants";
 
-export const fetchTempImages = async () => {
-  const response = await fetch("/api/temp-images");
-  if (!response.ok) {
-    throw new Error("Failed to fetch images");
-  }
-  return response.json();
-};
-
 export default function Unapproved() {
+  const fetchTempImages = async () => {
+    const response = await fetch("/api/temp-images");
+    if (!response.ok) {
+      throw new Error("Failed to fetch images");
+    }
+    return response.json();
+  };
+
   const {
     data: images,
     isLoading,

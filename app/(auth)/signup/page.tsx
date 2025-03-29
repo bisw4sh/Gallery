@@ -1,5 +1,5 @@
 "use client";
-import { useForm,type  SubmitHandler } from "react-hook-form";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle } from "lucide-react";
 import { z } from "zod";
@@ -19,15 +19,14 @@ import Link from "next/link";
 import { FormMessage, type Message } from "@/components/form-message";
 import { useEffect, useState } from "react";
 
-export const signUpSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters long"),
-});
-
-type TSignUp = z.infer<typeof signUpSchema>;
-
 export default function SignUpPage(props: { searchParams: Promise<Message> }) {
   const [resolvedParams, setResolvedParams] = useState<Message | null>(null);
+  const signUpSchema = z.object({
+    email: z.string().email("Please enter a valid email address"),
+    password: z.string().min(6, "Password must be at least 6 characters long"),
+  });
+
+  type TSignUp = z.infer<typeof signUpSchema>;
 
   useEffect(() => {
     props.searchParams.then((params) => setResolvedParams(params));

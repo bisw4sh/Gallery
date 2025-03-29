@@ -27,7 +27,6 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
-import { fetchImages } from "@/app/page";
 import { useQuery } from "react-query";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
@@ -36,6 +35,13 @@ import { deleteApprovedImage } from "./action";
 import { ImageT } from "@/app/constants/images.constants";
 
 export default function Approved() {
+  const fetchImages = async () => {
+    const response = await fetch("/api/images");
+    if (!response.ok) {
+      throw new Error("Failed to fetch images");
+    }
+    return response.json();
+  };
   const {
     data: images,
     isLoading,

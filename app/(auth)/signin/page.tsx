@@ -18,13 +18,13 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signInAction } from "@/app/actions";
 
-export const signInSchema = z.object({
-  email: z.string().email("Enter a valid email"),
-  password: z.string().min(6),
-});
-type TSignIn = z.infer<typeof signInSchema>;
-
 export default function SignInPage() {
+  const signInSchema = z.object({
+    email: z.string().email("Enter a valid email"),
+    password: z.string().min(6),
+  });
+  type TSignIn = z.infer<typeof signInSchema>;
+
   const {
     register,
     handleSubmit,

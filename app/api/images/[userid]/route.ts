@@ -4,15 +4,17 @@ import { notFound } from "next/navigation";
 import { ImageT } from "@/app/constants/images.constants";
 
 export async function GET(
-  request: Request, 
-  { params }: { params: { userid: string } }
+  request: Request,
+  { params }: { params: Promise<{ userid: string }> }
 ) {
   try {
+    const userid = (await params).userid;
+    
     const supabase = await createClient();
     const { data: images, error } = await supabase
       .from("images")
       .select("*")
-      .eq("user_id", params.userid); 
+      .eq("user_id", userid);
 
     if (error) {
       console.error("Images fetch error:", error);
@@ -25,8 +27,8 @@ export async function GET(
 
     const serializedImages: ImageT[] = images.map((image) => ({
       ...image,
-      id: image.id.toString(), 
-      tags: image.tags || [], 
+      id: image.id.toString(),
+      tags: image.tags || [],
     }));
 
     return NextResponse.json(serializedImages); 

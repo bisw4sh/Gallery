@@ -14,15 +14,14 @@ import { useQuery } from "react-query";
 import CardSkeleton from "@/components/CardSkeleton";
 import { ImageT } from "./constants/images.constants";
 
-export const fetchImages = async () => {
-  const response = await fetch("/api/images");
-  if (!response.ok) {
-    throw new Error("Failed to fetch images");
-  }
-  return response.json();
-};
-
 export default function Home() {
+  const fetchImages = async () => {
+    const response = await fetch("/api/images");
+    if (!response.ok) {
+      throw new Error("Failed to fetch images");
+    }
+    return response.json();
+  };
   const {
     data: images,
     isLoading,

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { forgotPasswordAction } from "@/app/actions";
 import { SubmitButton } from "@/components/submit-button";
 import { Input } from "@/components/ui/input";
@@ -10,12 +10,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 
-export const forgotPasswordSchema = z.object({
-  email: z.string().email("Enter a valid email"),
-});
-
-type TForgotPassword = z.infer<typeof forgotPasswordSchema>;
 export default function ForgotPassword() {
+  const forgotPasswordSchema = z.object({
+    email: z.string().email("Enter a valid email"),
+  });
+
+  type TForgotPassword = z.infer<typeof forgotPasswordSchema>;
+  
   const {
     register,
     handleSubmit,
@@ -24,7 +25,9 @@ export default function ForgotPassword() {
     resolver: zodResolver(forgotPasswordSchema),
   });
 
-  const onSubmit: SubmitHandler<TForgotPassword> = async(data: TForgotPassword) => {
+  const onSubmit: SubmitHandler<TForgotPassword> = async (
+    data: TForgotPassword
+  ) => {
     await forgotPasswordAction(data.email);
   };
 

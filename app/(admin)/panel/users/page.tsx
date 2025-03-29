@@ -38,15 +38,15 @@ interface TUser {
   role: "admin" | "normal";
 }
 
-export const fetchUsers = async () => {
-  const response = await fetch("/api/users");
-  if (!response.ok) {
-    throw new Error("Failed to fetch users");
-  }
-  return response.json();
-};
-
 export default function Users() {
+  const fetchUsers = async () => {
+    const response = await fetch("/api/users");
+    if (!response.ok) {
+      throw new Error("Failed to fetch users");
+    }
+    return response.json();
+  };
+
   const {
     data: users,
     isLoading,

@@ -16,19 +16,21 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { changePasswordAction } from "@/app/actions";
 
-export const changePasswordSchema = z
-  .object({
-    password: z.string().min(6, "Password must be at least 6 characters long"),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords must match",
-    path: ["confirmPassword"],
-  });
-
-type TChangePassword = z.infer<typeof changePasswordSchema>;
-
 export default function ResetPasswordPage() {
+  const changePasswordSchema = z
+    .object({
+      password: z
+        .string()
+        .min(6, "Password must be at least 6 characters long"),
+      confirmPassword: z.string(),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: "Passwords must match",
+      path: ["confirmPassword"],
+    });
+
+  type TChangePassword = z.infer<typeof changePasswordSchema>;
+
   const {
     register,
     handleSubmit,
